@@ -78,4 +78,3 @@ def clear_pending_link(admin_chat_id: int) -> None:
         headers=SUPABASE_HEADERS,
         params={"chat_id": f"eq.{admin_chat_id}"},
     )
-      
