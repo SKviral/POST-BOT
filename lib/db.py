@@ -51,28 +51,30 @@ def remove_channel(chat_id: str) -> None:
     )
 
 
-# ---------- pending link (waiting for the image) ----------
+# ---------- pending record (link, media, and menu "waiting for text" state) ----------
 
-def set_pending_link(admin_chat_id: int, link: str) -> None:
-    requests.post(
-        f"{SUPABASE_REST}/pending",
-        headers={**SUPABASE_HEADERS, "Prefer": "resolution=merge-duplicates"},
-        json={"chat_id": str(admin_chat_id), "link": link},
-    )
-
-
-def get_pending_link(admin_chat_id: int) -> str | None:
+def get_pending(admin_chat_id: int) -> dict | None:
     r = requests.get(
         f"{SUPABASE_REST}/pending",
         headers=SUPABASE_HEADERS,
-        params={"chat_id": f"eq.{admin_chat_id}", "select": "link"},
+        params={"chat_id": f"eq.{admin_chat_id}", "select": "*"},
     )
     r.raise_for_status()
     rows = r.json()
-    return rows[0]["link"] if rows else None
+    return rows[0] if rows else None
 
 
-def clear_pending_link(admin_chat_id: int) -> None:
+def set_pending(admin_chat_id: int, **fields) -> None:
+    """Upsert only the given fields; existing columns not passed are left untouched."""
+    body = {"chat_id": str(admin_chat_id), **fields}
+    requests.post(
+        f"{SUPABASE_REST}/pending",
+        headers={**SUPABASE_HEADERS, "Prefer": "resolution=merge-duplicates"},
+        json=body,
+    )
+
+
+def clear_pending(admin_chat_id: int) -> None:
     requests.delete(
         f"{SUPABASE_REST}/pending",
         headers=SUPABASE_HEADERS,

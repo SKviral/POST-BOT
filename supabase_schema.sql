@@ -14,5 +14,13 @@ create table if not exists channels (
 create table if not exists pending (
     chat_id text primary key,
     link text,
+    file_id text,
+    media_type text,
+    state text,
     updated_at timestamptz default now()
 );
+
+-- if you already ran the old schema, run these two lines as well:
+alter table pending add column if not exists file_id text;
+alter table pending add column if not exists media_type text;
+alter table pending add column if not exists state text;
