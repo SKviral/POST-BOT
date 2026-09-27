@@ -6,7 +6,6 @@ def send_message(chat_id, text: str) -> None:
     r = requests.post(f"{TELEGRAM_API}/sendMessage", json={
         "chat_id": chat_id,
         "text": text,
-        "parse_mode": "HTML",
         "disable_web_page_preview": False,
     })
     result = r.json()
@@ -19,6 +18,5 @@ def send_photo(chat_id, file_id: str, caption: str) -> dict:
         "chat_id": chat_id,
         "photo": file_id,
         "caption": caption,
-        "parse_mode": "HTML",
     })
     return r.json()
